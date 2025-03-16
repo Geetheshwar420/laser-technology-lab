@@ -1,3 +1,5 @@
+import React from 'react';
+
 export interface User {
   id: string;
   email: string;
@@ -6,6 +8,8 @@ export interface User {
   level: number;
   achievements: Achievement[];
   completedLessons: string[];
+  bio?: string;
+  website?: string;
 }
 
 export interface Achievement {
