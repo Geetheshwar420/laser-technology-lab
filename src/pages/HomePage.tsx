@@ -219,7 +219,7 @@ const HomePage: React.FC = () => {
             <DeveloperCard
               name="Geetheshwar G"
               role="Lead Software Engineer"
-              image="images/geetheshwar.jpg"
+              image="/images/geetheshwar.jpg"
               github="https://github.com/Geetheshwar420"
               linkedin="https://linkedin.com/in/geetheshwar-g-12262a255/"
               email="geetheeshwarg@gmail.com"
