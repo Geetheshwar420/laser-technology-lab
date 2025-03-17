@@ -229,9 +229,8 @@ const HomePage: React.FC = () => {
               name="Dr. M S Revathy"
               role="Faculty Advisor"
               image="images/revathy.jpg"
-              github="https://github.com/emilywatson"
-              linkedin="https://linkedin.com/in/emilywatson"
-              email="emily@laserlearn.edu"
+              linkedin="https://www.linkedin.com/in/dr-revathy-m-s-bba652149?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+              email=""
               delay={0.4}
             />
           </div>
