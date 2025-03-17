@@ -28,7 +28,7 @@ const DeveloperCard: React.FC<{
       <img 
         src={image} 
         alt={name} 
-        className="w-full h-64 object-cover"
+        className="w-full h-64 object-cover transition-transform duration-300 transform hover:scale-105"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
     </div>
@@ -98,7 +98,7 @@ const HomePage: React.FC = () => {
               {
                 title: 'Laser Applications',
                 description: 'Discover the wide range of applications for lasers in medicine, industry, and research.',
-                image: 'https://images.unsplash.com/photo-1581093458791-9f3c3900df7b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=300&q=80',
+                image: 'https://images.unsplash.com/photo-1609579857457-182bbcd11230?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
                 difficulty: 'Beginner',
                 link: '/lessons/unit-5-applications'
               }
@@ -215,8 +215,8 @@ const HomePage: React.FC = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <DeveloperCard
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mx-auto justify-center items-center text-center ">
+            <DeveloperCard
               name="Geetheshwar G"
               role="Lead Software Engineer"
               image="../images/geetheshwar.jpg"
@@ -225,14 +225,12 @@ const HomePage: React.FC = () => {
               email="geetheeshwarg@gmail.com"
               delay={0}
             />
-
             <DeveloperCard
-              name="Dr. Emily Watson"
-              role="Simulation Specialist"
-              image="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+              name="Dr. M S Revathy"
+              role="Faculty Advisor"
+              image="images/revathy.jpg"
               github="https://github.com/emilywatson"
               linkedin="https://linkedin.com/in/emilywatson"
-              twitter="https://twitter.com/emilywatson"
               email="emily@laserlearn.edu"
               delay={0.4}
             />
