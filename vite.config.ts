@@ -8,6 +8,7 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   server: {
+    allowedHosts: ['laserlearn.onrender.com'],
     host: '0.0.0.0',
   },
 });
