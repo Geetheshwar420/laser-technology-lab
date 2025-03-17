@@ -216,24 +216,25 @@ const HomePage: React.FC = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <DeveloperCard
+          <DeveloperCard
               name="Geetheshwar G"
               role="Lead Software Engineer"
-              image="/images/geetheshwar.jpg"
+              image="../images/geetheshwar.jpg"
               github="https://github.com/Geetheshwar420"
               linkedin="https://linkedin.com/in/geetheshwar-g-12262a255/"
               email="geetheeshwarg@gmail.com"
               delay={0}
             />
+
             <DeveloperCard
-              name="Alex Rodriguez"
-              role="Software Engineer & UI Designer"
-              image="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-              github="https://github.com/alexrod"
-              linkedin="https://linkedin.com/in/alexrod"
-              twitter="https://twitter.com/alexrod"
-              email="alex@laserlearn.edu"
-              delay={0.2}
+              name="Dr. Emily Watson"
+              role="Simulation Specialist"
+              image="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+              github="https://github.com/emilywatson"
+              linkedin="https://linkedin.com/in/emilywatson"
+              twitter="https://twitter.com/emilywatson"
+              email="emily@laserlearn.edu"
+              delay={0.4}
             />
           </div>
         </div>

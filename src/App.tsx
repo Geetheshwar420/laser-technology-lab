@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useStore } from './store/useStore';
@@ -14,6 +14,10 @@ import SimulationPage from './pages/SimulationPage';
 import LessonsPage from './pages/LessonsPage';
 import LessonDetailPage from './pages/LessonDetailPage';
 import LeaderboardPage from './pages/LeaderboardPage';
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
+import ContactPage from './pages/ContactPage';
+import AboutPage from './pages/AboutPage';
 
 function App() {
   const { darkMode } = useStore();
@@ -34,11 +38,12 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/about" element={<Navigate to="/" />} />
-        <Route path="/contact" element={<Navigate to="/" />} />
-        <Route path="/privacy" element={<Navigate to="/" />} />
-        <Route path="/terms" element={<Navigate to="/" />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/privacy" element={<PrivacyPage/>} />
+        <Route path="/terms" element={<TermsPage />} />
         <Route path="/chatbot" element={<Navigate to="/lessons" />} />
+
         
         <Route
           path="/profile"
