@@ -230,7 +230,7 @@ const HomePage: React.FC = () => {
               role="Faculty Advisor"
               image="images/revathy.jpg"
               linkedin="https://www.linkedin.com/in/dr-revathy-m-s-bba652149?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
-              email=""
+              email="revz27vijay@gmail.com"
               delay={0.4}
             />
           </div>
