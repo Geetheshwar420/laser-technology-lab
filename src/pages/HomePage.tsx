@@ -219,7 +219,7 @@ const HomePage: React.FC = () => {
             <DeveloperCard
               name="Geetheshwar G"
               role="Lead Software Engineer"
-              image="../images/geetheshwar.jpg"
+              image="https://media-hosting.imagekit.io//c3753e9b36ba4a07/geetheshwar.jpg?Expires=1837525104&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=MA4zM9n4fqw5O9Qicj9l2Jr437Tp8oXPZB4TyHmgz2cjN6AcGZSsHCfcqxsuhGdwSsH98da6nNcq4x3-F4ytvd5Wxw4S0PaZbctOA1V8xhKt~UGaw2Dy~aZ6tbQnTmlhxiaXfsiR5lAN4IJtreEFVb8b8Rn5OQpYox~BbrSFTxs13640GmtfyJbDKIPpITnHzGMQeXbq9jeegDrmbN9OhxSUn2WQ~0q1oZNPzyOZRiA8ezszgI5Z1HAqwx4c-8Mc9f8DC7faVfU58QxF09HSq3rtCH2HZ1-yLVyC5TCEAkZZN4cirCkPXOGeDwhu3PWMLynP9UQ6y2RnQljq1Fly8A__"
               github="https://github.com/Geetheshwar420"
               linkedin="https://linkedin.com/in/geetheshwar-g-12262a255/"
               email="geetheeshwarg@gmail.com"
@@ -228,7 +228,7 @@ const HomePage: React.FC = () => {
             <DeveloperCard
               name="Dr. M S Revathy"
               role="Faculty Advisor"
-              image="images/revathy.jpg"
+              image="https://media-hosting.imagekit.io//dc4f44ac5c6549ba/revathy.jpg?Expires=1837525104&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=lqyqZTLPr-wVoaR~-pHoEt8suTe4gAEoHMKzSi0FNqB~CbfwNnt9~MXN~tRjmQ6FLFkxnxzAUOcMiSwwvNn8O1yZMugaE3JXktQQuFtgSxQAKbq4QGpLRlaVuDR8QpCYRmcgSxfK-5CYL9vHL8TB5rSRtIeXNbN38SE~xzoQ67Inxli54CYdp2pTk1ANlm71ij6RSD2uDRSrJOjRfWnUUtBRnTvaHf3JZMfEx0fWmDaEFnMKCj~0ZMYYEp3H~kIGqyiQ~ga1bzH1GNi-vUPFqyeQqM0hyFA-LL~KWEDLYDlbO6lUp6YLC3Ij2I9VZuHI8LY5R6mXoJNQOFEiV~u69w__"
               linkedin="https://www.linkedin.com/in/dr-revathy-m-s-bba652149?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
               email="revz27vijay@gmail.com"
               delay={0.4}
