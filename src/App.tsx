@@ -1,5 +1,11 @@
+import TermsPage from './pages/TermsPage';
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useStore } from './store/useStore';
 import AuthGuard from './components/auth/AuthGuard';
@@ -13,15 +19,13 @@ import ChangeEmailPage from './pages/ChangeEmailPage';
 import SimulationPage from './pages/SimulationPage';
 import LessonsPage from './pages/LessonsPage';
 import LessonDetailPage from './pages/LessonDetailPage';
-import LeaderboardPage from './pages/LeaderboardPage';
-import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import ContactPage from './pages/ContactPage';
 import AboutPage from './pages/AboutPage';
 
 function App() {
   const { darkMode } = useStore();
-  
+
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
@@ -40,11 +44,10 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/privacy" element={<PrivacyPage/>} />
+        <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/chatbot" element={<Navigate to="/lessons" />} />
 
-        
         <Route
           path="/profile"
           element={
@@ -97,13 +100,11 @@ function App() {
           path="/leaderboard"
           element={
             <AuthGuard>
-              <LeaderboardPage />
+              <div>Leaderboard Page Not Found</div>
             </AuthGuard>
           }
         />
-        
-        {/* Catch all route */}
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

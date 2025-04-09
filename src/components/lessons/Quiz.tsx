@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useStore } from '../../store/useStore';
+import { useLessonProgress } from '../../hooks/useLessonProgress';
 import { Question, QuizResult } from '../../types';
 import Card, { CardContent, CardHeader, CardFooter } from '../ui/Card';
 import Button from '../ui/Button';
@@ -16,6 +18,8 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
   const [userAnswers, setUserAnswers] = useState<number[]>([]);
   const [quizCompleted, setQuizCompleted] = useState(false);
+  const { progress } = useLessonProgress(lessonId);
+  const isAlreadyCompleted = progress?.completed || false;
   
   const currentQuestion = questions[currentQuestionIndex];
   
@@ -61,6 +65,29 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
       
       setQuizCompleted(true);
       onComplete(result);
+      
+      // Update points in store
+      const { user, setUser } = useStore.getState();
+      if (user) {
+        const pointsEarned = Math.max(1, Math.floor((correctAnswers / questions.length) * 10));
+        const updatedUser = {
+          ...user,
+          id: user.id || '',
+          email: user.email || '',
+          username: user.username || '',
+          points: (user.points || 0) + pointsEarned,
+          level: user.level || 1,
+          achievements: user.achievements || [],
+          completedLessons: [...new Set([...(user.completedLessons || []), lessonId])],
+          bio: user.bio || '',
+          website: user.website || '',
+          avatar_url: user.avatar_url || '',
+          current_streak: (user.current_streak || 0) + 1,
+          longest_streak: Math.max(user.longest_streak || 0, (user.current_streak || 0) + 1)
+        };
+        console.log('Updating user with:', updatedUser);
+        setUser(updatedUser);
+      }
     }
   };
   
@@ -76,6 +103,48 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
     };
   };
   
+  if (isAlreadyCompleted) {
+    return (
+      <Card>
+        <CardHeader>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center">
+            Lesson Completed!
+          </h2>
+        </CardHeader>
+        <CardContent className="text-center">
+          <div className="mb-6">
+            <Award className="h-20 w-20 text-green-500 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              You scored: {progress?.score ? Math.round(progress.score * 100) : 0}%
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              You've already completed this quiz
+            </p>
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-center gap-4">
+          <Button variant="primary" onClick={() => window.location.href = '/lessons'}>
+            Back to Lessons
+          </Button>
+          <Button 
+            variant="secondary"
+            onClick={() => {
+              const currentIndex = useStore.getState().lessons.findIndex(
+                (lesson: { id: string }) => lesson.id === lessonId
+              );
+              const nextLesson = useStore.getState().lessons[currentIndex + 1];
+              if (nextLesson) {
+                window.location.href = `/lessons/${nextLesson.id}`;
+              }
+            }}
+          >
+            Go to Next Lesson
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  }
+
   if (quizCompleted) {
     const score = calculateScore();
     
@@ -119,9 +188,24 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="flex justify-center">
+        <CardFooter className="flex justify-center gap-4">
           <Button variant="primary" onClick={() => window.location.href = '/lessons'}>
             Back to Lessons
+          </Button>
+          <Button 
+            variant="secondary"
+            onClick={() => {
+              // Get next lesson ID from store
+              const currentIndex = useStore.getState().lessons.findIndex(
+                l => l.id === lessonId
+              );
+              const nextLesson = useStore.getState().lessons[currentIndex + 1];
+              if (nextLesson) {
+                window.location.href = `/lessons/${nextLesson.id}`;
+              }
+            }}
+          >
+            Go to Next Lesson
           </Button>
         </CardFooter>
       </Card>

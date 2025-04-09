@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Zap, Github, Mail } from 'lucide-react';
+import { Zap, Github, Twitter, Mail } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
@@ -16,10 +16,13 @@ const Footer: React.FC = () => {
               An interactive game-based educational platform that helps students understand advanced concepts of laser technology through animations, simulations, and interactive learning.
             </p>
             <div className="mt-6 flex space-x-6">
-              <a href="https://github.com/Geetheshwar420/laser-technology-lab" className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
+              <a href="#" className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
                 <Github className="h-6 w-6" />
               </a>
-              <a href="geethehwarg@gmail.com" className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
+              <a href="#" className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
+                <Twitter className="h-6 w-6" />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
                 <Mail className="h-6 w-6" />
               </a>
             </div>
