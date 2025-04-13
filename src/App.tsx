@@ -36,7 +36,10 @@ function App() {
   }, [darkMode]);
 
   return (
-    <Router>
+    <Router future={{
+      v7_startTransition: true,
+      v7_relativeSplatPath: true
+    }}>
       <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<HomePage />} />

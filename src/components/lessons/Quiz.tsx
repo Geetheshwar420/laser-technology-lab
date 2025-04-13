@@ -46,6 +46,21 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
     newUserAnswers[currentQuestionIndex] = selectedOption;
     setUserAnswers(newUserAnswers);
   };
+
+  const handleCompleteQuiz = (result: QuizResult) => {
+    if (quizCompleted) {
+      console.warn('Quiz already completed');
+      return;
+    }
+    console.log('Quiz completed with:', {
+      correctAnswers: result.correctAnswers,
+      totalQuestions: result.totalQuestions,
+      score: result.score,
+      lessonId: result.lessonId
+    });
+    setQuizCompleted(true);
+    onComplete(result);
+  };
   
   const handleNextQuestion = () => {
     setSelectedOption(null);
@@ -68,8 +83,7 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
         date: new Date()
       };
       
-      setQuizCompleted(true);
-      onComplete(result);
+      handleCompleteQuiz(result);
     }
   };
   

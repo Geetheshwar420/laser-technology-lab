@@ -4,12 +4,10 @@ import { LessonProgress, QuizResult } from '../types';
 import {
   getLessonProgress,
   updateLessonProgress,
-  markLessonComplete,
   checkPrerequisites,
   updateComponentProgress,
-  calculateLessonScore,
   submitQuizResult,
-} from '../lib/lessons';
+} from '../lib/lessons.ts';
 import { toast } from 'react-hot-toast';
 
 export function useLessonProgress(lessonId: string) {
@@ -52,32 +50,21 @@ export function useLessonProgress(lessonId: string) {
 
   const completeQuiz = async (result: QuizResult) => {
     try {
-      // Submit quiz results
-      await submitQuizResult(result);
-
-      // Calculate final lesson score
-      const score = await calculateLessonScore(
-        result.correctAnswers / result.totalQuestions * 100,
-        Object.keys(progress?.components_completed || {})
-      );
-
-      // Mark lesson as complete
-      await markLessonComplete(lessonId, score);
+      if (!result || !result.lessonId) {
+        throw new Error('Invalid quiz result data');
+      }
+      console.log('Submitting quiz result:', result);
+      // Submit quiz results and wait for Supabase confirmation
+      const score: number = await submitQuizResult(result);
+      console.log('Quiz result submitted with score:', score);
       
-      // Update global state
-      completeLesson(lessonId);
+      // Refresh progress from Supabase to ensure consistency
+      const updatedProgress = await getLessonProgress(lessonId);
+      console.log('Refreshed progress from Supabase:', updatedProgress);
 
-      // Update local state
-      setProgress(prev => prev ? {
-        ...prev,
-        completed: true,
-        score,
-        completed_at: new Date().toISOString(),
-        components_completed: {
-          ...prev.components_completed,
-          quiz_completed: true,
-        },
-      } : null);
+      // Update both global and local state with confirmed data
+      completeLesson(lessonId);
+      setProgress(updatedProgress);
 
       return score;
     } catch (err) {
