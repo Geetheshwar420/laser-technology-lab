@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useStore } from '../../store/useStore';
-import { useLessonProgress } from '../../hooks/useLessonProgress';
+import { Link, useNavigate } from 'react-router-dom';
 import { Question, QuizResult } from '../../types';
 import Card, { CardContent, CardHeader, CardFooter } from '../ui/Card';
 import Button from '../ui/Button';
-import { CheckCircle, XCircle, HelpCircle, Award } from 'lucide-react';
+import { CheckCircle, XCircle, HelpCircle, Award, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useStore } from '../../store/useStore';
 
 interface QuizProps {
   questions: Question[];
@@ -13,15 +14,21 @@ interface QuizProps {
 }
 
 const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
+  const navigate = useNavigate();
+  const { lessons } = useStore();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
   const [userAnswers, setUserAnswers] = useState<number[]>([]);
   const [quizCompleted, setQuizCompleted] = useState(false);
-  const { progress } = useLessonProgress(lessonId);
-  const isAlreadyCompleted = progress?.completed || false;
   
   const currentQuestion = questions[currentQuestionIndex];
+
+  // Find the next lesson in sequence
+  const currentLessonIndex = lessons.findIndex(lesson => lesson.id === lessonId);
+  const nextLesson = currentLessonIndex < lessons.length - 1 
+    ? lessons[currentLessonIndex + 1] 
+    : null;
   
   const handleOptionSelect = (optionIndex: number) => {
     if (!isAnswerSubmitted) {
@@ -52,11 +59,9 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
         (answer, index) => answer === questions[index].correctAnswer
       ).length;
       
-      const score = correctAnswers / questions.length;
-      
       const result: QuizResult = {
         lessonId,
-        score,
+        score: correctAnswers / questions.length,
         totalQuestions: questions.length,
         correctAnswers,
         completed: true,
@@ -65,29 +70,6 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
       
       setQuizCompleted(true);
       onComplete(result);
-      
-      // Update points in store
-      const { user, setUser } = useStore.getState();
-      if (user) {
-        const pointsEarned = Math.max(1, Math.floor((correctAnswers / questions.length) * 10));
-        const updatedUser = {
-          ...user,
-          id: user.id || '',
-          email: user.email || '',
-          username: user.username || '',
-          points: (user.points || 0) + pointsEarned,
-          level: user.level || 1,
-          achievements: user.achievements || [],
-          completedLessons: [...new Set([...(user.completedLessons || []), lessonId])],
-          bio: user.bio || '',
-          website: user.website || '',
-          avatar_url: user.avatar_url || '',
-          current_streak: (user.current_streak || 0) + 1,
-          longest_streak: Math.max(user.longest_streak || 0, (user.current_streak || 0) + 1)
-        };
-        console.log('Updating user with:', updatedUser);
-        setUser(updatedUser);
-      }
     }
   };
   
@@ -102,49 +84,13 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
       percentage: Math.round((correctAnswers / questions.length) * 100)
     };
   };
-  
-  if (isAlreadyCompleted) {
-    return (
-      <Card>
-        <CardHeader>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center">
-            Lesson Completed!
-          </h2>
-        </CardHeader>
-        <CardContent className="text-center">
-          <div className="mb-6">
-            <Award className="h-20 w-20 text-green-500 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              You scored: {progress?.score ? Math.round(progress.score * 100) : 0}%
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              You've already completed this quiz
-            </p>
-          </div>
-        </CardContent>
-        <CardFooter className="flex justify-center gap-4">
-          <Button variant="primary" onClick={() => window.location.href = '/lessons'}>
-            Back to Lessons
-          </Button>
-          <Button 
-            variant="secondary"
-            onClick={() => {
-              const currentIndex = useStore.getState().lessons.findIndex(
-                (lesson: { id: string }) => lesson.id === lessonId
-              );
-              const nextLesson = useStore.getState().lessons[currentIndex + 1];
-              if (nextLesson) {
-                window.location.href = `/lessons/${nextLesson.id}`;
-              }
-            }}
-          >
-            Go to Next Lesson
-          </Button>
-        </CardFooter>
-      </Card>
-    );
-  }
 
+  const handleNextLesson = () => {
+    if (nextLesson) {
+      navigate(`/lessons/${nextLesson.id}`);
+    }
+  };
+  
   if (quizCompleted) {
     const score = calculateScore();
     
@@ -154,7 +100,11 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center">Quiz Completed!</h2>
         </CardHeader>
         <CardContent className="text-center">
-          <div className="mb-6">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="mb-6"
+          >
             <Award className="h-20 w-20 text-yellow-500 mx-auto mb-4" />
             <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
               {score.percentage}%
@@ -162,10 +112,15 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
             <p className="text-gray-600 dark:text-gray-300">
               You got {score.correctAnswers} out of {score.totalQuestions} questions correct
             </p>
-          </div>
+          </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
-            <div className="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg">
+            <motion.div
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg"
+            >
               <h4 className="font-semibold text-green-800 dark:text-green-300 mb-2">What you did well:</h4>
               <p className="text-green-700 dark:text-green-400 text-sm">
                 {score.percentage >= 80 
@@ -174,9 +129,14 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
                   ? "Good job! You understand the core concepts of this lesson."
                   : "You've grasped some of the key points from this lesson."}
               </p>
-            </div>
+            </motion.div>
             
-            <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
+            <motion.div
+              initial={{ x: 20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg"
+            >
               <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">What to focus on next:</h4>
               <p className="text-blue-700 dark:text-blue-400 text-sm">
                 {score.percentage >= 80 
@@ -185,28 +145,25 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
                   ? "Review the sections where you made mistakes to strengthen your understanding."
                   : "Consider revisiting this lesson to reinforce the concepts you found challenging."}
               </p>
-            </div>
+            </motion.div>
           </div>
         </CardContent>
-        <CardFooter className="flex justify-center gap-4">
-          <Button variant="primary" onClick={() => window.location.href = '/lessons'}>
-            Back to Lessons
-          </Button>
-          <Button 
-            variant="secondary"
-            onClick={() => {
-              // Get next lesson ID from store
-              const currentIndex = useStore.getState().lessons.findIndex(
-                l => l.id === lessonId
-              );
-              const nextLesson = useStore.getState().lessons[currentIndex + 1];
-              if (nextLesson) {
-                window.location.href = `/lessons/${nextLesson.id}`;
-              }
-            }}
-          >
-            Go to Next Lesson
-          </Button>
+        <CardFooter className="flex justify-center space-x-4">
+          <Link to="/lessons">
+            <Button variant="outline">
+              Back to Lessons
+            </Button>
+          </Link>
+          {nextLesson && (
+            <Button 
+              variant="primary" 
+              onClick={handleNextLesson}
+              className="flex items-center"
+            >
+              Next Lesson
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          )}
         </CardFooter>
       </Card>
     );
@@ -221,9 +178,9 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
             Question {currentQuestionIndex + 1} of {questions.length}
           </span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700 mt-2">
+        <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-2">
           <div 
-            className="bg-blue-600 h-2 rounded-full" 
+            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
             style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
           ></div>
         </div>
@@ -236,8 +193,11 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
           
           <div className="space-y-3">
             {currentQuestion.options.map((option, index) => (
-              <div 
+              <motion.div 
                 key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
                 onClick={() => handleOptionSelect(index)}
                 className={`p-4 rounded-lg cursor-pointer transition-colors ${
                   selectedOption === index 
@@ -283,17 +243,21 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
                     </p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
         
         {isAnswerSubmitted && (
-          <div className={`p-4 rounded-lg mb-6 ${
-            selectedOption === currentQuestion.correctAnswer
-              ? 'bg-green-50 dark:bg-green-900/30'
-              : 'bg-red-50 dark:bg-red-900/30'
-          }`}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`p-4 rounded-lg mb-6 ${
+              selectedOption === currentQuestion.correctAnswer
+                ? 'bg-green-50 dark:bg-green-900/30'
+                : 'bg-red-50 dark:bg-red-900/30'
+            }`}
+          >
             <div className="flex">
               <div className="flex-shrink-0">
                 {selectedOption === currentQuestion.correctAnswer ? (
@@ -319,7 +283,7 @@ const Quiz: React.FC<QuizProps> = ({ questions, lessonId, onComplete }) => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
       </CardContent>
       <CardFooter className="flex justify-between">

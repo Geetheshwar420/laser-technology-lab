@@ -1,5 +1,3 @@
-import React from 'react';
-
 export interface User {
   id: string;
   email: string;
@@ -11,8 +9,6 @@ export interface User {
   bio?: string;
   website?: string;
   avatar_url?: string;
-  current_streak?: number;
-  longest_streak?: number;
 }
 
 export interface Achievement {
@@ -78,16 +74,6 @@ export interface SimulationParams {
   temperature: number;
 }
 
-export interface LeaderboardEntry {
-  userId: string;
-  username: string;
-  points: number;
-  level: number;
-  avatar_url?: string;
-  current_streak: number;
-  longest_streak: number;
-}
-
 export interface QuizResult {
   lessonId: string;
   score: number;
@@ -106,19 +92,6 @@ export interface LessonProgress {
   components_completed: Record<string, boolean>;
   last_accessed: string;
   completed_at?: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface UserScore {
-  id: string;
-  user_id: string;
-  total_score: number;
-  lessons_completed: number;
-  current_streak: number;
-  longest_streak: number;
-  last_lesson_completed?: string;
-  achievements: Achievement[];
   created_at: string;
   updated_at: string;
 }

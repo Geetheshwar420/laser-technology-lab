@@ -82,8 +82,15 @@ const LessonDetailPage: React.FC = () => {
     }
   };
   
-  const handleQuizComplete = (result: any) => {
-    addQuizResult(result);
+  const handleQuizComplete = (result: { score: number; answers: Record<string, any> }) => {
+    if (lessonId) {
+      addQuizResult({
+        lessonId,
+        score: result.score,
+        completedAt: new Date(),
+        answers: result.answers
+      });
+    }
   };
   
   return (

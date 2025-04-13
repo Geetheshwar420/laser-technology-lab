@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useStore } from '../store/useStore';
-import { LessonProgress } from '../types';
-import { supabase } from '../lib/supabase';
+import { LessonProgress, QuizResult } from '../types';
 import {
   getLessonProgress,
   updateLessonProgress,
@@ -9,7 +8,9 @@ import {
   checkPrerequisites,
   updateComponentProgress,
   calculateLessonScore,
+  submitQuizResult,
 } from '../lib/lessons';
+import { toast } from 'react-hot-toast';
 
 export function useLessonProgress(lessonId: string) {
   const [progress, setProgress] = useState<LessonProgress | null>(null);
@@ -19,19 +20,22 @@ export function useLessonProgress(lessonId: string) {
 
   useEffect(() => {
     async function fetchProgress() {
+      if (!user) return;
+      
       try {
+        setIsLoading(true);
         const data = await getLessonProgress(lessonId);
         setProgress(data);
       } catch (err) {
+        console.error('Error fetching lesson progress:', err);
         setError(err as Error);
+        toast.error('Failed to load lesson progress');
       } finally {
         setIsLoading(false);
       }
     }
 
-    if (user) {
-      fetchProgress();
-    }
+    fetchProgress();
   }, [lessonId, user]);
 
   const updateProgress = async (updates: Partial<LessonProgress>) => {
@@ -39,40 +43,47 @@ export function useLessonProgress(lessonId: string) {
       await updateLessonProgress(lessonId, updates);
       setProgress(prev => prev ? { ...prev, ...updates } : null);
     } catch (err) {
+      console.error('Error updating progress:', err);
       setError(err as Error);
+      toast.error('Failed to update progress');
       throw err;
     }
   };
 
-  const completeQuiz = async (quizScore: number) => {
+  const completeQuiz = async (result: QuizResult) => {
     try {
+      // Submit quiz results
+      await submitQuizResult(result);
+
+      // Calculate final lesson score
       const score = await calculateLessonScore(
-        quizScore,
+        result.correctAnswers / result.totalQuestions * 100,
         Object.keys(progress?.components_completed || {})
       );
 
-      // First update the database via RPC
-      const { error } = await supabase.rpc('process_unit_completion', {
-        p_user_id: user?.id,
-        p_unit_id: lessonId
-      });
-
-      if (error) throw error;
-
-      // Then update local state
+      // Mark lesson as complete
       await markLessonComplete(lessonId, score);
+      
+      // Update global state
       completeLesson(lessonId);
 
+      // Update local state
       setProgress(prev => prev ? {
         ...prev,
         completed: true,
         score,
         completed_at: new Date().toISOString(),
+        components_completed: {
+          ...prev.components_completed,
+          quiz_completed: true,
+        },
       } : null);
 
       return score;
     } catch (err) {
+      console.error('Error completing quiz:', err);
       setError(err as Error);
+      toast.error('Failed to complete quiz');
       throw err;
     }
   };
@@ -81,7 +92,9 @@ export function useLessonProgress(lessonId: string) {
     try {
       return await checkPrerequisites(lessonId, prerequisites);
     } catch (err) {
+      console.error('Error checking prerequisites:', err);
       setError(err as Error);
+      toast.error('Failed to validate prerequisites');
       throw err;
     }
   };
@@ -99,8 +112,11 @@ export function useLessonProgress(lessonId: string) {
           },
         };
       });
+      toast.success('Progress saved');
     } catch (err) {
+      console.error('Error marking component complete:', err);
       setError(err as Error);
+      toast.error('Failed to save progress');
       throw err;
     }
   };

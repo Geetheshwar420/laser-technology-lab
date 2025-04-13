@@ -12,7 +12,11 @@ export interface PointsResponse {
     }>;
   };
   totalPoints: number;
-=======
+  leaderboard: {
+    currentRank: number;
+    previousRank: number;
+    pointsToNextRank: number;
+  };
   achievements: Array<{
     name: string;
     description: string;

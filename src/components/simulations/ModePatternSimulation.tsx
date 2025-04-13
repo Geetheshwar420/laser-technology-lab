@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { useStore } from '../../store/useStore';
+//import { useStore } from '../../store/useStore';
 import Card, { CardHeader, CardContent } from '../ui/Card';
 import Button from '../ui/Button';
 
